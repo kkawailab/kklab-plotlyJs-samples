@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plotly.js サンプル集</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+            min-height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            background: linear-gradient(90deg, #4fc3f7, #81c784, #ffb74d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: #aaa;
+            margin-bottom: 30px;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .badge {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            color: #ccc;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .section-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .beginner .section-icon { background: linear-gradient(135deg, #4fc3f7, #29b6f6); }
+        .intermediate .section-icon { background: linear-gradient(135deg, #81c784, #66bb6a); }
+        .advanced .section-icon { background: linear-gradient(135deg, #ffb74d, #ffa726); }
+
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .section-desc {
+            color: #888;
+            font-size: 0.9rem;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .card-number {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .card-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+
+        .card-desc {
+            font-size: 0.85rem;
+            color: #888;
+            line-height: 1.5;
+        }
+
+        .beginner .card:hover { border-color: #4fc3f7; }
+        .intermediate .card:hover { border-color: #81c784; }
+        .advanced .card:hover { border-color: #ffb74d; }
+
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 50px;
+        }
+
+        footer p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: #4fc3f7;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .github-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: #fff;
+            text-decoration: none;
+            margin-top: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .github-link:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .github-link svg {
+            width: 20px;
+            height: 20px;
+            fill: currentColor;
+        }
+
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8rem; }
+            .container { padding: 20px 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Plotly.js サンプル集</h1>
+            <p class="subtitle">初心者から上級者まで、30個のインタラクティブなデータ可視化サンプル</p>
+            <div class="badges">
+                <span class="badge">Plotly.js v2.27.0</span>
+                <span class="badge">30 サンプル</span>
+                <span class="badge">単一HTMLファイル</span>
+                <span class="badge">コピペで使える</span>
+            </div>
+        </header>
+
+        <section class="section beginner">
+            <div class="section-header">
+                <div class="section-icon">1</div>
+                <div>
+                    <h2>初心者レベル</h2>
+                    <p class="section-desc">基本的なグラフの作成方法を学びます</p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <a href="01-basic-line-chart.html" class="card">
+                    <div class="card-number">01</div>
+                    <div class="card-title">基本的な折れ線グラフ</div>
+                    <div class="card-desc">Plotly.jsで最もシンプルな折れ線グラフを作成</div>
+                </a>
+                <a href="02-basic-bar-chart.html" class="card">
+                    <div class="card-number">02</div>
+                    <div class="card-title">基本的な棒グラフ</div>
+                    <div class="card-desc">カテゴリ別のデータを棒グラフで表示</div>
+                </a>
+                <a href="03-basic-pie-chart.html" class="card">
+                    <div class="card-number">03</div>
+                    <div class="card-title">基本的な円グラフ</div>
+                    <div class="card-desc">データの割合を円グラフで可視化</div>
+                </a>
+                <a href="04-scatter-plot.html" class="card">
+                    <div class="card-number">04</div>
+                    <div class="card-title">散布図</div>
+                    <div class="card-desc">2つの変数の関係を散布図で表示</div>
+                </a>
+                <a href="05-multiple-line-chart.html" class="card">
+                    <div class="card-number">05</div>
+                    <div class="card-title">複数データの折れ線グラフ</div>
+                    <div class="card-desc">複数のデータセットを同じグラフに表示</div>
+                </a>
+                <a href="06-horizontal-bar-chart.html" class="card">
+                    <div class="card-number">06</div>
+                    <div class="card-title">横棒グラフ</div>
+                    <div class="card-desc">水平方向の棒グラフでランキングを表示</div>
+                </a>
+                <a href="07-donut-chart.html" class="card">
+                    <div class="card-number">07</div>
+                    <div class="card-title">ドーナツチャート</div>
+                    <div class="card-desc">中央に穴が開いた円グラフ</div>
+                </a>
+                <a href="08-area-chart.html" class="card">
+                    <div class="card-number">08</div>
+                    <div class="card-title">エリアチャート</div>
+                    <div class="card-desc">折れ線グラフの下側を塗りつぶし</div>
+                </a>
+                <a href="09-stacked-bar-chart.html" class="card">
+                    <div class="card-number">09</div>
+                    <div class="card-title">積み上げ棒グラフ</div>
+                    <div class="card-desc">複数カテゴリを積み上げて表示</div>
+                </a>
+                <a href="10-bubble-chart.html" class="card">
+                    <div class="card-number">10</div>
+                    <div class="card-title">バブルチャート</div>
+                    <div class="card-desc">3つの変数をX軸、Y軸、サイズで表現</div>
+                </a>
+            </div>
+        </section>
+
+        <section class="section intermediate">
+            <div class="section-header">
+                <div class="section-icon">2</div>
+                <div>
+                    <h2>中級レベル</h2>
+                    <p class="section-desc">より高度なグラフタイプと機能を学びます</p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <a href="11-subplots.html" class="card">
+                    <div class="card-number">11</div>
+                    <div class="card-title">サブプロット</div>
+                    <div class="card-desc">1つの画面に複数のグラフを配置</div>
+                </a>
+                <a href="12-heatmap.html" class="card">
+                    <div class="card-number">12</div>
+                    <div class="card-title">ヒートマップ</div>
+                    <div class="card-desc">データの密度や強度を色で表現</div>
+                </a>
+                <a href="13-box-plot.html" class="card">
+                    <div class="card-number">13</div>
+                    <div class="card-title">箱ひげ図</div>
+                    <div class="card-desc">データの分布を箱ひげ図で可視化</div>
+                </a>
+                <a href="14-histogram.html" class="card">
+                    <div class="card-number">14</div>
+                    <div class="card-title">ヒストグラム</div>
+                    <div class="card-desc">データの度数分布を表示</div>
+                </a>
+                <a href="15-contour-plot.html" class="card">
+                    <div class="card-number">15</div>
+                    <div class="card-title">等高線図</div>
+                    <div class="card-desc">2次元データの等高線を描画</div>
+                </a>
+                <a href="16-3d-scatter.html" class="card">
+                    <div class="card-number">16</div>
+                    <div class="card-title">3D散布図</div>
+                    <div class="card-desc">3次元空間にデータポイントを配置</div>
+                </a>
+                <a href="17-3d-surface.html" class="card">
+                    <div class="card-number">17</div>
+                    <div class="card-title">3D曲面図</div>
+                    <div class="card-desc">3次元曲面を描画（回転可能）</div>
+                </a>
+                <a href="18-radar-chart.html" class="card">
+                    <div class="card-number">18</div>
+                    <div class="card-title">レーダーチャート</div>
+                    <div class="card-desc">複数の指標を放射状に配置</div>
+                </a>
+                <a href="19-treemap.html" class="card">
+                    <div class="card-number">19</div>
+                    <div class="card-title">ツリーマップ</div>
+                    <div class="card-desc">階層データを面積で表現</div>
+                </a>
+                <a href="20-sankey-diagram.html" class="card">
+                    <div class="card-number">20</div>
+                    <div class="card-title">サンキーダイアグラム</div>
+                    <div class="card-desc">フローや変換を可視化</div>
+                </a>
+            </div>
+        </section>
+
+        <section class="section advanced">
+            <div class="section-header">
+                <div class="section-icon">3</div>
+                <div>
+                    <h2>上級レベル</h2>
+                    <p class="section-desc">インタラクティブ機能と高度なカスタマイズを学びます</p>
+                </div>
+            </div>
+            <div class="card-grid">
+                <a href="21-animation.html" class="card">
+                    <div class="card-number">21</div>
+                    <div class="card-title">アニメーション</div>
+                    <div class="card-desc">Plotly.animateを使用したグラフアニメーション</div>
+                </a>
+                <a href="22-custom-buttons.html" class="card">
+                    <div class="card-number">22</div>
+                    <div class="card-title">カスタムボタン</div>
+                    <div class="card-desc">グラフ内にボタンを配置してデータを切り替え</div>
+                </a>
+                <a href="23-slider.html" class="card">
+                    <div class="card-number">23</div>
+                    <div class="card-title">スライダー</div>
+                    <div class="card-desc">スライダーでデータを切り替え</div>
+                </a>
+                <a href="24-dropdown.html" class="card">
+                    <div class="card-number">24</div>
+                    <div class="card-title">ドロップダウン</div>
+                    <div class="card-desc">ドロップダウンメニューでデータやビューを切り替え</div>
+                </a>
+                <a href="25-realtime-update.html" class="card">
+                    <div class="card-number">25</div>
+                    <div class="card-title">リアルタイム更新</div>
+                    <div class="card-desc">setIntervalとextendTracesでリアルタイム更新</div>
+                </a>
+                <a href="26-combined-chart.html" class="card">
+                    <div class="card-number">26</div>
+                    <div class="card-title">複合グラフ</div>
+                    <div class="card-desc">折れ線+棒グラフを2軸で表示</div>
+                </a>
+                <a href="27-choropleth-map.html" class="card">
+                    <div class="card-number">27</div>
+                    <div class="card-title">地理マップ</div>
+                    <div class="card-desc">世界地図上にデータを色で表現</div>
+                </a>
+                <a href="28-custom-hover.html" class="card">
+                    <div class="card-number">28</div>
+                    <div class="card-title">カスタムホバー</div>
+                    <div class="card-desc">ホバー時のツールチップをカスタマイズ</div>
+                </a>
+                <a href="29-event-handling.html" class="card">
+                    <div class="card-number">29</div>
+                    <div class="card-title">イベントハンドリング</div>
+                    <div class="card-desc">クリック、選択、ホバーイベントを処理</div>
+                </a>
+                <a href="30-dashboard.html" class="card">
+                    <div class="card-number">30</div>
+                    <div class="card-title">ダッシュボード</div>
+                    <div class="card-desc">複数グラフを組み合わせたダッシュボード</div>
+                </a>
+            </div>
+        </section>
+
+        <footer>
+            <p>各サンプルは単一のHTMLファイルで完結しています。<br>コードをコピーしてすぐに使い始めることができます。</p>
+            <a href="https://github.com/kkawailab/kklab-plotlyJs-samples" class="github-link" target="_blank">
+                <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>
+                GitHub でソースを見る
+            </a>
+            <p style="margin-top: 30px; font-size: 0.8rem;">
+                <a href="https://plotly.com/javascript/" target="_blank">Plotly.js 公式ドキュメント</a>
+            </p>
+        </footer>
+    </div>
+</body>
+</html>
