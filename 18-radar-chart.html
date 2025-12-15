@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>18 - レーダーチャート</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #66bb6a;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 550px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>18 - レーダーチャート</h1>
+        <p class="description">複数の指標を放射状に配置したレーダーチャートの例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const categories = ['攻撃力', '防御力', 'スピード', '技術', 'スタミナ', '精神力'];
+
+        const trace1 = {
+            type: 'scatterpolar',
+            r: [85, 70, 90, 80, 75, 85],
+            theta: categories,
+            fill: 'toself',
+            name: '選手A',
+            fillcolor: 'rgba(52, 152, 219, 0.3)',
+            line: { color: '#3498db' }
+        };
+
+        const trace2 = {
+            type: 'scatterpolar',
+            r: [75, 85, 70, 90, 80, 70],
+            theta: categories,
+            fill: 'toself',
+            name: '選手B',
+            fillcolor: 'rgba(231, 76, 60, 0.3)',
+            line: { color: '#e74c3c' }
+        };
+
+        const layout = {
+            title: '選手能力比較',
+            polar: {
+                radialaxis: {
+                    visible: true,
+                    range: [0, 100]
+                }
+            },
+            showlegend: true
+        };
+
+        Plotly.newPlot('chart', [trace1, trace2], layout);
+    </script>
+</body>
+</html>

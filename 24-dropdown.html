@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24 - ドロップダウン付きグラフ</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #ff6e40;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 550px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>24 - ドロップダウン付きグラフ</h1>
+        <p class="description">ドロップダウンメニューでデータやビューを切り替える例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+
+        const regions = {
+            '関東': [300, 320, 350, 380, 400, 420, 450, 460, 440, 420, 400, 380],
+            '関西': [200, 210, 230, 250, 270, 280, 300, 310, 290, 280, 260, 240],
+            '中部': [150, 160, 175, 190, 200, 210, 220, 225, 215, 205, 190, 175],
+            '九州': [100, 110, 120, 130, 140, 145, 150, 155, 145, 140, 130, 120]
+        };
+
+        const allTraces = Object.keys(regions).map((region, i) => ({
+            x: months,
+            y: regions[region],
+            name: region,
+            type: 'scatter',
+            mode: 'lines+markers',
+            line: { width: 2 },
+            visible: true
+        }));
+
+        const layout = {
+            title: '地域別月次売上',
+            xaxis: { title: '月' },
+            yaxis: { title: '売上（億円）', range: [0, 500] },
+            updatemenus: [{
+                type: 'dropdown',
+                x: 0,
+                y: 1.15,
+                xanchor: 'left',
+                yanchor: 'top',
+                buttons: [
+                    {
+                        label: 'すべて表示',
+                        method: 'update',
+                        args: [{ visible: [true, true, true, true] }]
+                    },
+                    {
+                        label: '関東のみ',
+                        method: 'update',
+                        args: [{ visible: [true, false, false, false] }]
+                    },
+                    {
+                        label: '関西のみ',
+                        method: 'update',
+                        args: [{ visible: [false, true, false, false] }]
+                    },
+                    {
+                        label: '中部のみ',
+                        method: 'update',
+                        args: [{ visible: [false, false, true, false] }]
+                    },
+                    {
+                        label: '九州のみ',
+                        method: 'update',
+                        args: [{ visible: [false, false, false, true] }]
+                    }
+                ]
+            },
+            {
+                type: 'dropdown',
+                x: 0.25,
+                y: 1.15,
+                xanchor: 'left',
+                yanchor: 'top',
+                buttons: [
+                    {
+                        label: '折れ線グラフ',
+                        method: 'restyle',
+                        args: ['type', 'scatter']
+                    },
+                    {
+                        label: '棒グラフ',
+                        method: 'restyle',
+                        args: ['type', 'bar']
+                    }
+                ]
+            }]
+        };
+
+        Plotly.newPlot('chart', allTraces, layout);
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>15 - 等高線図</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #26c6da;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>15 - 等高線図</h1>
+        <p class="description">2次元データの等高線を描画する例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        // 等高線用のデータを生成
+        const size = 50;
+        const x = [];
+        const y = [];
+        const z = [];
+
+        for (let i = 0; i < size; i++) {
+            x.push(-5 + i * 10 / size);
+            y.push(-5 + i * 10 / size);
+        }
+
+        for (let i = 0; i < size; i++) {
+            const row = [];
+            for (let j = 0; j < size; j++) {
+                const xi = x[j];
+                const yi = y[i];
+                row.push(Math.sin(Math.sqrt(xi * xi + yi * yi)));
+            }
+            z.push(row);
+        }
+
+        const trace = {
+            x: x,
+            y: y,
+            z: z,
+            type: 'contour',
+            colorscale: 'Viridis',
+            contours: {
+                coloring: 'heatmap'
+            },
+            colorbar: {
+                title: '値'
+            }
+        };
+
+        const layout = {
+            title: '等高線図：sin(sqrt(x² + y²))',
+            xaxis: { title: 'X軸' },
+            yaxis: { title: 'Y軸' }
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

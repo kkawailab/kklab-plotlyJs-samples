@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>04 - 散布図</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #9b59b6;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>04 - 散布図</h1>
+        <p class="description">2つの変数の関係を散布図で表示する例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        // ランダムなデータを生成
+        const n = 50;
+        const x = Array.from({length: n}, () => Math.random() * 100);
+        const y = x.map(v => v * 0.8 + Math.random() * 20 - 10);
+
+        const trace = {
+            x: x,
+            y: y,
+            mode: 'markers',
+            type: 'scatter',
+            marker: {
+                color: '#9b59b6',
+                size: 10,
+                opacity: 0.7
+            }
+        };
+
+        const layout = {
+            title: '学習時間とテスト得点の相関',
+            xaxis: {
+                title: '学習時間（時間）'
+            },
+            yaxis: {
+                title: 'テスト得点'
+            }
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

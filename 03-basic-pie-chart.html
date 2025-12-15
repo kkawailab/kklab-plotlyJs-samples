@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>03 - 基本的な円グラフ</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #2ecc71;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>03 - 基本的な円グラフ</h1>
+        <p class="description">データの割合を円グラフで可視化する例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const trace = {
+            values: [35, 25, 20, 15, 5],
+            labels: ['Chrome', 'Safari', 'Firefox', 'Edge', 'その他'],
+            type: 'pie',
+            marker: {
+                colors: ['#4285f4', '#ff6d01', '#ff9500', '#0078d7', '#888888']
+            },
+            textinfo: 'label+percent',
+            hoverinfo: 'label+value+percent'
+        };
+
+        const layout = {
+            title: 'ブラウザシェア'
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

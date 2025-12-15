@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>23 - スライダー付きグラフ</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #00e676;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 550px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>23 - スライダー付きグラフ</h1>
+        <p class="description">スライダーでデータを切り替えるグラフの例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        // 各年のデータを生成
+        const years = ['2019', '2020', '2021', '2022', '2023', '2024'];
+        const categories = ['製品A', '製品B', '製品C', '製品D', '製品E'];
+
+        const dataByYear = {
+            '2019': [120, 90, 70, 50, 30],
+            '2020': [140, 95, 80, 55, 40],
+            '2021': [160, 110, 90, 70, 55],
+            '2022': [180, 130, 100, 85, 65],
+            '2023': [200, 150, 120, 100, 80],
+            '2024': [230, 170, 140, 115, 95]
+        };
+
+        // フレームを作成
+        const frames = years.map(year => ({
+            name: year,
+            data: [{
+                y: dataByYear[year]
+            }]
+        }));
+
+        // スライダーのステップを作成
+        const sliderSteps = years.map(year => ({
+            method: 'animate',
+            label: year,
+            args: [[year], {
+                mode: 'immediate',
+                transition: { duration: 300 },
+                frame: { duration: 300, redraw: false }
+            }]
+        }));
+
+        const trace = {
+            x: categories,
+            y: dataByYear['2019'],
+            type: 'bar',
+            marker: {
+                color: categories.map((_, i) =>
+                    `hsl(${i * 60}, 70%, 50%)`
+                )
+            }
+        };
+
+        const layout = {
+            title: '年度別製品売上',
+            xaxis: { title: '製品' },
+            yaxis: { title: '売上（億円）', range: [0, 250] },
+            sliders: [{
+                active: 0,
+                steps: sliderSteps,
+                x: 0.1,
+                len: 0.8,
+                xanchor: 'left',
+                y: -0.1,
+                yanchor: 'top',
+                pad: { t: 50, b: 10 },
+                currentvalue: {
+                    visible: true,
+                    prefix: '年度: ',
+                    xanchor: 'center',
+                    font: { size: 16, color: '#333' }
+                },
+                transition: { duration: 300 }
+            }]
+        };
+
+        Plotly.newPlot('chart', [trace], layout).then(() => {
+            Plotly.addFrames('chart', frames);
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>21 - アニメーション付きグラフ</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #ec407a;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background: #ec407a;
+            color: white;
+        }
+        button:hover {
+            background: #d81b60;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>21 - アニメーション付きグラフ</h1>
+        <p class="description">Plotly.animateを使用したグラフアニメーションの例です。</p>
+        <div class="controls">
+            <button onclick="startAnimation()">アニメーション開始</button>
+            <button onclick="resetAnimation()">リセット</button>
+        </div>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const years = [2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024];
+        const salesData = {
+            '製品A': [100, 120, 150, 180, 220, 200, 250, 300, 350, 400],
+            '製品B': [80, 90, 110, 140, 160, 180, 210, 240, 280, 320],
+            '製品C': [50, 70, 85, 100, 120, 150, 180, 200, 230, 260]
+        };
+
+        let currentIndex = 0;
+
+        // 初期描画
+        const trace1 = {
+            x: [years[0]],
+            y: [salesData['製品A'][0]],
+            name: '製品A',
+            mode: 'lines+markers',
+            line: { color: '#e74c3c', width: 3 }
+        };
+
+        const trace2 = {
+            x: [years[0]],
+            y: [salesData['製品B'][0]],
+            name: '製品B',
+            mode: 'lines+markers',
+            line: { color: '#3498db', width: 3 }
+        };
+
+        const trace3 = {
+            x: [years[0]],
+            y: [salesData['製品C'][0]],
+            name: '製品C',
+            mode: 'lines+markers',
+            line: { color: '#2ecc71', width: 3 }
+        };
+
+        const layout = {
+            title: '年間売上推移（アニメーション）',
+            xaxis: { title: '年', range: [2014, 2025] },
+            yaxis: { title: '売上（億円）', range: [0, 450] }
+        };
+
+        Plotly.newPlot('chart', [trace1, trace2, trace3], layout);
+
+        function startAnimation() {
+            currentIndex = 0;
+            animate();
+        }
+
+        function animate() {
+            if (currentIndex >= years.length) return;
+
+            Plotly.animate('chart', {
+                data: [
+                    { x: years.slice(0, currentIndex + 1), y: salesData['製品A'].slice(0, currentIndex + 1) },
+                    { x: years.slice(0, currentIndex + 1), y: salesData['製品B'].slice(0, currentIndex + 1) },
+                    { x: years.slice(0, currentIndex + 1), y: salesData['製品C'].slice(0, currentIndex + 1) }
+                ]
+            }, {
+                transition: { duration: 300 },
+                frame: { duration: 300, redraw: false }
+            });
+
+            currentIndex++;
+            setTimeout(animate, 400);
+        }
+
+        function resetAnimation() {
+            currentIndex = 0;
+            Plotly.animate('chart', {
+                data: [
+                    { x: [years[0]], y: [salesData['製品A'][0]] },
+                    { x: [years[0]], y: [salesData['製品B'][0]] },
+                    { x: [years[0]], y: [salesData['製品C'][0]] }
+                ]
+            }, {
+                transition: { duration: 0 },
+                frame: { duration: 0, redraw: true }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>29 - イベントハンドリング</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #ba68c8;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 400px;
+        }
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 4px solid #ba68c8;
+        }
+        .info-panel h3 {
+            margin-top: 0;
+            color: #333;
+        }
+        .event-log {
+            max-height: 150px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 12px;
+            background: #fff;
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .event-item {
+            padding: 5px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .event-item:last-child {
+            border-bottom: none;
+        }
+        .selected-info {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .info-card {
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            min-width: 150px;
+        }
+        .info-card label {
+            display: block;
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 5px;
+        }
+        .info-card value {
+            display: block;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>29 - イベントハンドリング</h1>
+        <p class="description">グラフのクリック、選択、ホバーイベントを処理する例です。データポイントをクリックしてみてください。</p>
+        <div id="chart"></div>
+
+        <div class="info-panel">
+            <h3>選択されたデータ</h3>
+            <div class="selected-info" id="selectedInfo">
+                <div class="info-card">
+                    <label>月</label>
+                    <value id="selectedMonth">-</value>
+                </div>
+                <div class="info-card">
+                    <label>売上</label>
+                    <value id="selectedSales">-</value>
+                </div>
+                <div class="info-card">
+                    <label>前月比</label>
+                    <value id="selectedChange">-</value>
+                </div>
+            </div>
+        </div>
+
+        <div class="info-panel">
+            <h3>イベントログ</h3>
+            <div class="event-log" id="eventLog"></div>
+        </div>
+    </div>
+
+    <script>
+        const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+        const sales = [320, 350, 380, 420, 450, 480, 520, 510, 490, 470, 440, 410];
+        const changes = sales.map((s, i) => i === 0 ? 0 : ((s - sales[i-1]) / sales[i-1] * 100).toFixed(1));
+
+        const trace = {
+            x: months,
+            y: sales,
+            type: 'scatter',
+            mode: 'lines+markers',
+            marker: {
+                size: 12,
+                color: '#ba68c8'
+            },
+            line: {
+                width: 3,
+                color: '#ba68c8'
+            },
+            customdata: changes
+        };
+
+        const layout = {
+            title: '月次売上（クリックで詳細表示）',
+            xaxis: { title: '月' },
+            yaxis: { title: '売上（万円）' },
+            hovermode: 'closest'
+        };
+
+        const chartDiv = document.getElementById('chart');
+        Plotly.newPlot(chartDiv, [trace], layout);
+
+        // イベントログを追加する関数
+        function addLog(message) {
+            const log = document.getElementById('eventLog');
+            const time = new Date().toLocaleTimeString();
+            const item = document.createElement('div');
+            item.className = 'event-item';
+            item.textContent = `[${time}] ${message}`;
+            log.insertBefore(item, log.firstChild);
+
+            // 最大10件まで保持
+            while (log.children.length > 10) {
+                log.removeChild(log.lastChild);
+            }
+        }
+
+        // クリックイベント
+        chartDiv.on('plotly_click', function(data) {
+            const point = data.points[0];
+            document.getElementById('selectedMonth').textContent = point.x;
+            document.getElementById('selectedSales').textContent = point.y + '万円';
+            document.getElementById('selectedChange').textContent =
+                point.pointIndex === 0 ? '-' : point.customdata + '%';
+
+            addLog(`クリック: ${point.x} - 売上 ${point.y}万円`);
+
+            // クリックされたポイントをハイライト
+            Plotly.restyle(chartDiv, {
+                'marker.size': months.map((_, i) => i === point.pointIndex ? 20 : 12),
+                'marker.color': months.map((_, i) => i === point.pointIndex ? '#e91e63' : '#ba68c8')
+            });
+        });
+
+        // ホバーイベント
+        chartDiv.on('plotly_hover', function(data) {
+            const point = data.points[0];
+            addLog(`ホバー: ${point.x}`);
+        });
+
+        // ダブルクリックイベント
+        chartDiv.on('plotly_doubleclick', function() {
+            addLog('ダブルクリック: リセット');
+            Plotly.restyle(chartDiv, {
+                'marker.size': 12,
+                'marker.color': '#ba68c8'
+            });
+            document.getElementById('selectedMonth').textContent = '-';
+            document.getElementById('selectedSales').textContent = '-';
+            document.getElementById('selectedChange').textContent = '-';
+        });
+
+        // 選択イベント
+        chartDiv.on('plotly_selected', function(data) {
+            if (data && data.points) {
+                addLog(`選択: ${data.points.length}点を選択`);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>20 - サンキーダイアグラム</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #78909c;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 550px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>20 - サンキーダイアグラム</h1>
+        <p class="description">フローや変換を可視化するサンキーダイアグラムの例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const trace = {
+            type: 'sankey',
+            orientation: 'h',
+            node: {
+                pad: 15,
+                thickness: 30,
+                line: {
+                    color: 'black',
+                    width: 0.5
+                },
+                label: ['サイト訪問', 'ランディングページ', '商品ページ', 'カート追加', '決済画面', '購入完了', '離脱'],
+                color: ['#3498db', '#9b59b6', '#e74c3c', '#f39c12', '#1abc9c', '#2ecc71', '#95a5a6']
+            },
+            link: {
+                source: [0, 0, 1, 1, 2, 2, 3, 3, 4, 4],
+                target: [1, 6, 2, 6, 3, 6, 4, 6, 5, 6],
+                value: [1000, 200, 800, 100, 600, 100, 500, 50, 400, 50],
+                color: [
+                    'rgba(155, 89, 182, 0.4)',
+                    'rgba(149, 165, 166, 0.4)',
+                    'rgba(231, 76, 60, 0.4)',
+                    'rgba(149, 165, 166, 0.4)',
+                    'rgba(243, 156, 18, 0.4)',
+                    'rgba(149, 165, 166, 0.4)',
+                    'rgba(26, 188, 156, 0.4)',
+                    'rgba(149, 165, 166, 0.4)',
+                    'rgba(46, 204, 113, 0.4)',
+                    'rgba(149, 165, 166, 0.4)'
+                ]
+            }
+        };
+
+        const layout = {
+            title: 'ECサイトのコンバージョンファネル',
+            font: { size: 12 }
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

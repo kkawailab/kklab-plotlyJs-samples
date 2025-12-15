@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>27 - 地理マップ（コロプレス）</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #4db6ac;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 600px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>27 - 地理マップ（コロプレス）</h1>
+        <p class="description">世界地図上に各国のデータを色で表現するコロプレスマップの例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const trace = {
+            type: 'choropleth',
+            locationmode: 'country names',
+            locations: [
+                'Japan', 'United States', 'China', 'Germany', 'United Kingdom',
+                'France', 'India', 'Brazil', 'Canada', 'Australia',
+                'South Korea', 'Italy', 'Spain', 'Mexico', 'Indonesia',
+                'Netherlands', 'Saudi Arabia', 'Turkey', 'Switzerland', 'Poland'
+            ],
+            z: [
+                4940, 25350, 17730, 4070, 3070,
+                2780, 3390, 1920, 2140, 1690,
+                1670, 2010, 1400, 1320, 1190,
+                1010, 1060, 906, 808, 688
+            ],
+            text: [
+                '日本', 'アメリカ', '中国', 'ドイツ', 'イギリス',
+                'フランス', 'インド', 'ブラジル', 'カナダ', 'オーストラリア',
+                '韓国', 'イタリア', 'スペイン', 'メキシコ', 'インドネシア',
+                'オランダ', 'サウジアラビア', 'トルコ', 'スイス', 'ポーランド'
+            ],
+            colorscale: [
+                [0, '#f7fbff'],
+                [0.2, '#deebf7'],
+                [0.4, '#9ecae1'],
+                [0.6, '#4292c6'],
+                [0.8, '#2171b5'],
+                [1, '#084594']
+            ],
+            colorbar: {
+                title: 'GDP（10億USD）',
+                thickness: 20
+            },
+            hovertemplate: '%{text}<br>GDP: %{z}10億USD<extra></extra>'
+        };
+
+        const layout = {
+            title: '主要国のGDP（名目）',
+            geo: {
+                showframe: false,
+                showcoastlines: true,
+                projection: {
+                    type: 'natural earth'
+                }
+            }
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>19 - ツリーマップ</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #ffca28;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 550px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>19 - ツリーマップ</h1>
+        <p class="description">階層データを面積で表現するツリーマップの例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const trace = {
+            type: 'treemap',
+            labels: [
+                '全社',
+                '営業部', '開発部', '管理部',
+                '営業1課', '営業2課', '営業3課',
+                'フロントエンド', 'バックエンド', 'インフラ',
+                '人事', '経理', '総務'
+            ],
+            parents: [
+                '',
+                '全社', '全社', '全社',
+                '営業部', '営業部', '営業部',
+                '開発部', '開発部', '開発部',
+                '管理部', '管理部', '管理部'
+            ],
+            values: [
+                0,
+                0, 0, 0,
+                30, 25, 20,
+                15, 20, 10,
+                8, 6, 6
+            ],
+            textinfo: 'label+value+percent parent',
+            marker: {
+                colors: [
+                    '#ffffff',
+                    '#3498db', '#2ecc71', '#e74c3c',
+                    '#5dade2', '#85c1e9', '#aed6f1',
+                    '#58d68d', '#82e0aa', '#abebc6',
+                    '#ec7063', '#f1948a', '#f5b7b1'
+                ]
+            },
+            pathbar: {
+                visible: true
+            }
+        };
+
+        const layout = {
+            title: '部門別人員構成'
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

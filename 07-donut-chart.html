@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>07 - ドーナツチャート</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #e91e63;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>07 - ドーナツチャート</h1>
+        <p class="description">中央に穴が開いた円グラフ（ドーナツチャート）の例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const trace = {
+            values: [40, 25, 20, 10, 5],
+            labels: ['食費', '住居費', '交通費', '娯楽費', 'その他'],
+            type: 'pie',
+            hole: 0.5,
+            marker: {
+                colors: ['#e91e63', '#9c27b0', '#673ab7', '#3f51b5', '#2196f3']
+            },
+            textinfo: 'label+percent',
+            insidetextorientation: 'radial'
+        };
+
+        const layout = {
+            title: '月間支出の内訳',
+            annotations: [{
+                text: '支出',
+                x: 0.5,
+                y: 0.5,
+                font: {
+                    size: 20,
+                    color: '#333'
+                },
+                showarrow: false
+            }]
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

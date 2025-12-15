@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>08 - エリアチャート</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #00bcd4;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>08 - エリアチャート</h1>
+        <p class="description">折れ線グラフの下側を塗りつぶしたエリアチャートの例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        const trace = {
+            x: ['2019', '2020', '2021', '2022', '2023', '2024'],
+            y: [100, 120, 150, 200, 280, 350],
+            fill: 'tozeroy',
+            type: 'scatter',
+            mode: 'lines',
+            name: 'ユーザー数',
+            line: {
+                color: '#00bcd4'
+            },
+            fillcolor: 'rgba(0, 188, 212, 0.3)'
+        };
+
+        const layout = {
+            title: 'サービス利用者数の推移',
+            xaxis: {
+                title: '年'
+            },
+            yaxis: {
+                title: 'ユーザー数（万人）'
+            }
+        };
+
+        Plotly.newPlot('chart', [trace], layout);
+    </script>
+</body>
+</html>

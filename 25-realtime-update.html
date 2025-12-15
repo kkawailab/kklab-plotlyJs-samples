@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>25 - リアルタイム更新グラフ</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #00bfa5;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            background: #00bfa5;
+            color: white;
+        }
+        button:hover {
+            background: #00897b;
+        }
+        .status {
+            text-align: center;
+            margin-top: 10px;
+            font-size: 14px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>25 - リアルタイム更新グラフ</h1>
+        <p class="description">setIntervalとPlotly.extendTracesを使用したリアルタイムデータ更新の例です。</p>
+        <div class="controls">
+            <button onclick="startUpdate()">開始</button>
+            <button onclick="stopUpdate()">停止</button>
+            <button onclick="resetChart()">リセット</button>
+        </div>
+        <div id="chart"></div>
+        <div class="status" id="status">停止中</div>
+    </div>
+
+    <script>
+        let intervalId = null;
+        let counter = 0;
+        const maxPoints = 50;
+
+        const trace1 = {
+            x: [],
+            y: [],
+            name: 'センサー1',
+            mode: 'lines',
+            line: { color: '#00bfa5', width: 2 }
+        };
+
+        const trace2 = {
+            x: [],
+            y: [],
+            name: 'センサー2',
+            mode: 'lines',
+            line: { color: '#ff6e40', width: 2 }
+        };
+
+        const layout = {
+            title: 'センサーデータ（リアルタイム）',
+            xaxis: { title: '時間（秒）' },
+            yaxis: { title: '値', range: [-10, 10] }
+        };
+
+        Plotly.newPlot('chart', [trace1, trace2], layout);
+
+        function generateData() {
+            return {
+                sensor1: Math.sin(counter * 0.1) * 5 + Math.random() * 2 - 1,
+                sensor2: Math.cos(counter * 0.15) * 4 + Math.random() * 2 - 1
+            };
+        }
+
+        function updateChart() {
+            const data = generateData();
+            counter++;
+
+            const update = {
+                x: [[counter], [counter]],
+                y: [[data.sensor1], [data.sensor2]]
+            };
+
+            // データポイントが多くなったら古いデータを削除
+            const chartDiv = document.getElementById('chart');
+            if (chartDiv.data[0].x.length > maxPoints) {
+                Plotly.relayout('chart', {
+                    'xaxis.range': [counter - maxPoints, counter]
+                });
+            }
+
+            Plotly.extendTraces('chart', update, [0, 1], maxPoints);
+        }
+
+        function startUpdate() {
+            if (intervalId === null) {
+                intervalId = setInterval(updateChart, 100);
+                document.getElementById('status').textContent = '更新中...';
+            }
+        }
+
+        function stopUpdate() {
+            if (intervalId !== null) {
+                clearInterval(intervalId);
+                intervalId = null;
+                document.getElementById('status').textContent = '停止中';
+            }
+        }
+
+        function resetChart() {
+            stopUpdate();
+            counter = 0;
+            Plotly.newPlot('chart', [
+                { x: [], y: [], name: 'センサー1', mode: 'lines', line: { color: '#00bfa5', width: 2 } },
+                { x: [], y: [], name: 'センサー2', mode: 'lines', line: { color: '#ff6e40', width: 2 } }
+            ], layout);
+        }
+    </script>
+</body>
+</html>

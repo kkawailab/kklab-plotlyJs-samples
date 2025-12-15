@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 - ダッシュボード風レイアウト</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #1a1a2e;
+            color: #eee;
+        }
+        .dashboard {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .dashboard-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #333;
+        }
+        .dashboard-header h1 {
+            margin: 0;
+            color: #fff;
+            font-size: 24px;
+        }
+        .header-info {
+            color: #888;
+            font-size: 14px;
+        }
+        .kpi-row {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .kpi-card {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        .kpi-card .label {
+            font-size: 12px;
+            color: #888;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .kpi-card .value {
+            font-size: 28px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        .kpi-card .change {
+            font-size: 13px;
+        }
+        .kpi-card .change.positive { color: #4caf50; }
+        .kpi-card .change.negative { color: #f44336; }
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .chart-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        .chart-card {
+            background: linear-gradient(135deg, #16213e 0%, #1a1a2e 100%);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid #333;
+        }
+        .chart-card h3 {
+            margin: 0 0 10px 0;
+            font-size: 14px;
+            color: #888;
+        }
+        .chart {
+            width: 100%;
+            height: 250px;
+        }
+        .chart-large {
+            height: 300px;
+        }
+        @media (max-width: 1000px) {
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .chart-grid { grid-template-columns: 1fr; }
+            .chart-row { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <div class="dashboard-header">
+            <h1>Sales Dashboard</h1>
+            <div class="header-info">最終更新: 2024年12月 | リアルタイムデータ</div>
+        </div>
+
+        <div class="kpi-row">
+            <div class="kpi-card">
+                <div class="label">総売上</div>
+                <div class="value" style="color: #4fc3f7;">¥24.8億</div>
+                <div class="change positive">▲ 12.5% vs 前年</div>
+            </div>
+            <div class="kpi-card">
+                <div class="label">新規顧客</div>
+                <div class="value" style="color: #81c784;">1,248人</div>
+                <div class="change positive">▲ 8.3% vs 前月</div>
+            </div>
+            <div class="kpi-card">
+                <div class="label">平均単価</div>
+                <div class="value" style="color: #ffb74d;">¥198,500</div>
+                <div class="change negative">▼ 2.1% vs 前月</div>
+            </div>
+            <div class="kpi-card">
+                <div class="label">コンバージョン率</div>
+                <div class="value" style="color: #f06292;">3.8%</div>
+                <div class="change positive">▲ 0.5pt vs 前月</div>
+            </div>
+        </div>
+
+        <div class="chart-grid">
+            <div class="chart-card">
+                <h3>月次売上推移</h3>
+                <div id="chart1" class="chart chart-large"></div>
+            </div>
+            <div class="chart-card">
+                <h3>カテゴリ別売上</h3>
+                <div id="chart2" class="chart chart-large"></div>
+            </div>
+        </div>
+
+        <div class="chart-row">
+            <div class="chart-card">
+                <h3>地域別売上</h3>
+                <div id="chart3" class="chart"></div>
+            </div>
+            <div class="chart-card">
+                <h3>時間帯別アクセス</h3>
+                <div id="chart4" class="chart"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ダークテーマ共通設定
+        const darkLayout = {
+            paper_bgcolor: 'transparent',
+            plot_bgcolor: 'transparent',
+            font: { color: '#888', size: 11 },
+            margin: { t: 30, r: 20, b: 40, l: 50 },
+            xaxis: { gridcolor: '#333', zerolinecolor: '#333' },
+            yaxis: { gridcolor: '#333', zerolinecolor: '#333' }
+        };
+
+        const config = { displayModeBar: false, responsive: true };
+
+        // チャート1: 月次売上推移
+        const months = ['1月', '2月', '3月', '4月', '5月', '6月', '7月', '8月', '9月', '10月', '11月', '12月'];
+        Plotly.newPlot('chart1', [
+            {
+                x: months,
+                y: [180, 195, 210, 225, 240, 255, 270, 265, 250, 235, 220, 248],
+                type: 'scatter',
+                mode: 'lines+markers',
+                name: '2024年',
+                line: { color: '#4fc3f7', width: 3 },
+                marker: { size: 6 },
+                fill: 'tozeroy',
+                fillcolor: 'rgba(79, 195, 247, 0.1)'
+            },
+            {
+                x: months,
+                y: [160, 170, 185, 195, 210, 220, 235, 230, 220, 210, 200, 220],
+                type: 'scatter',
+                mode: 'lines',
+                name: '2023年',
+                line: { color: '#666', width: 2, dash: 'dot' }
+            }
+        ], {
+            ...darkLayout,
+            showlegend: true,
+            legend: { x: 0, y: 1.1, orientation: 'h', font: { size: 10 } },
+            yaxis: { ...darkLayout.yaxis, title: '売上（百万円）' }
+        }, config);
+
+        // チャート2: カテゴリ別売上（ドーナツ）
+        Plotly.newPlot('chart2', [{
+            values: [35, 25, 20, 12, 8],
+            labels: ['電子機器', 'アパレル', '食品', '家具', 'その他'],
+            type: 'pie',
+            hole: 0.6,
+            marker: {
+                colors: ['#4fc3f7', '#81c784', '#ffb74d', '#f06292', '#ba68c8']
+            },
+            textinfo: 'percent',
+            textfont: { color: '#fff', size: 11 },
+            hoverinfo: 'label+value+percent'
+        }], {
+            ...darkLayout,
+            showlegend: true,
+            legend: { x: 1, y: 0.5, font: { size: 10 } },
+            annotations: [{
+                text: '¥24.8億',
+                x: 0.5,
+                y: 0.5,
+                font: { size: 16, color: '#fff' },
+                showarrow: false
+            }]
+        }, config);
+
+        // チャート3: 地域別売上（横棒）
+        Plotly.newPlot('chart3', [{
+            y: ['九州', '中国', '四国', '関西', '中部', '関東', '東北', '北海道'],
+            x: [3.2, 2.8, 1.5, 5.8, 4.2, 8.5, 2.1, 1.2],
+            type: 'bar',
+            orientation: 'h',
+            marker: {
+                color: ['#4fc3f7', '#4fc3f7', '#4fc3f7', '#81c784', '#81c784', '#ffb74d', '#4fc3f7', '#4fc3f7']
+            }
+        }], {
+            ...darkLayout,
+            xaxis: { ...darkLayout.xaxis, title: '売上（億円）' },
+            yaxis: { ...darkLayout.yaxis, autorange: 'reversed' }
+        }, config);
+
+        // チャート4: 時間帯別アクセス（エリア）
+        const hours = Array.from({length: 24}, (_, i) => i + '時');
+        const access = [
+            5, 3, 2, 1, 1, 2, 8, 25, 45, 55, 50, 48,
+            60, 55, 52, 58, 65, 70, 68, 55, 40, 30, 20, 10
+        ];
+        Plotly.newPlot('chart4', [{
+            x: hours,
+            y: access,
+            type: 'scatter',
+            mode: 'lines',
+            fill: 'tozeroy',
+            line: { color: '#f06292', width: 2 },
+            fillcolor: 'rgba(240, 98, 146, 0.2)'
+        }], {
+            ...darkLayout,
+            xaxis: {
+                ...darkLayout.xaxis,
+                tickmode: 'array',
+                tickvals: [0, 6, 12, 18, 23],
+                ticktext: ['0時', '6時', '12時', '18時', '23時']
+            },
+            yaxis: { ...darkLayout.yaxis, title: 'アクセス数（千）' }
+        }, config);
+    </script>
+</body>
+</html>

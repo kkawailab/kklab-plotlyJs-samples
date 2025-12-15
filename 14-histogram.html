@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>14 - ヒストグラム</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            border-bottom: 2px solid #ab47bc;
+            padding-bottom: 10px;
+        }
+        .description {
+            color: #666;
+            margin-bottom: 20px;
+        }
+        #chart {
+            width: 100%;
+            height: 500px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>14 - ヒストグラム</h1>
+        <p class="description">データの度数分布をヒストグラムで表示する例です。</p>
+        <div id="chart"></div>
+    </div>
+
+    <script>
+        // 正規分布に近いデータを生成
+        function generateNormalData(n, mean, std) {
+            const data = [];
+            for (let i = 0; i < n; i++) {
+                let u = 0, v = 0;
+                while (u === 0) u = Math.random();
+                while (v === 0) v = Math.random();
+                data.push(mean + std * Math.sqrt(-2.0 * Math.log(u)) * Math.cos(2.0 * Math.PI * v));
+            }
+            return data;
+        }
+
+        const data1 = generateNormalData(500, 170, 8);
+        const data2 = generateNormalData(500, 158, 6);
+
+        const trace1 = {
+            x: data1,
+            type: 'histogram',
+            name: '男性',
+            opacity: 0.7,
+            marker: { color: '#3498db' },
+            nbinsx: 30
+        };
+
+        const trace2 = {
+            x: data2,
+            type: 'histogram',
+            name: '女性',
+            opacity: 0.7,
+            marker: { color: '#e91e63' },
+            nbinsx: 30
+        };
+
+        const layout = {
+            title: '身長分布',
+            barmode: 'overlay',
+            xaxis: { title: '身長（cm）' },
+            yaxis: { title: '人数' }
+        };
+
+        Plotly.newPlot('chart', [trace1, trace2], layout);
+    </script>
+</body>
+</html>
